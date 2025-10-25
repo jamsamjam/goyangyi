@@ -30,7 +30,7 @@ const emojiList = {
 client.on("messageCreate", message => {
     if (message.author.bot) return;
 
-    const words = message.content.replace(/[^a-zA-Z ]/g, "").split(" ");
+    const words = message.content.toLowerCase().replace(/[^a-zA-Z ]/g, "").split(" ");
 
     if (['cat', 'cats', 'kitten', 'kittens', 'kitty', 'kitties'].some(elem => words.includes(elem))) {
         message.channel.send("**냐옹냐옹** 😺");
