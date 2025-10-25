@@ -1,4 +1,4 @@
-import { Client, IntentsBitField } from 'discord.js';
+import { Client, IntentsBitField, messageLink } from 'discord.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -7,12 +7,20 @@ const client = new Client({
     intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.MessageContent, IntentsBitField.Flags.GuildMessages]
 });
 
+client.login(process.env.DISCORD_TOKEN);
+
 client.on("clientReady", () => {
     console.log("The Bot is Ready :)");
     client.user.setActivity("goyangyibot.samlee.ch");
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.on("guildCreate", guild => {
+    client.channels.cache.get("1431622444019613696").send(guild.name + " with " + guild.approximateMemberCount + " members added 🐱");
+});
+
+client.on("guildDelete", guild => {
+    client.channels.cache.get("1431622444019613696").send("Noo.. " + guild.name + " removed us..");
+});
 
 const emojiList = {
     "🥺": ["괜찮아 딩딩딩딩..", "괜찮아 🥺"],
