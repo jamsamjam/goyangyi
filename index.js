@@ -1,4 +1,4 @@
-import { Client, IntentsBitField, messageLink } from 'discord.js';
+import { Client, IntentsBitField, ContextMenuCommandBuilder, ApplicationCommandType, Events } from 'discord.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -9,16 +9,16 @@ const client = new Client({
 
 client.login(process.env.DISCORD_TOKEN);
 
-client.on("clientReady", () => {
+client.on(Events.ClientReady, () => {
     console.log("The Bot is Ready :)");
     client.user.setActivity("goyangyibot.samlee.ch");
 });
 
-client.on("guildCreate", guild => {
+client.on(Events.GuildCreate, guild => {
     client.channels.cache.get("1431622444019613696").send(guild.name + " with " + guild.memberCount + " members added 🐱");
 });
 
-client.on("guildDelete", guild => {
+client.on(Events.GuildDelete, guild => {
     client.channels.cache.get("1431622444019613696").send("Noo.. " + guild.name + " removed us..");
 });
 
@@ -27,7 +27,7 @@ const emojiList = {
     "😂": ["푸하하", "ㅋㅋㅋ", "ㅋㅋ", "ㅎㅎ"]
 };
 
-client.on("messageCreate", message => {
+client.on(Events.MessageCreate, message => {
     if (message.author.bot) return;
 
     const words = message.content.toLowerCase().replace(/[^a-zA-Z ]/g, "").split(" ");
