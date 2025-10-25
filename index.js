@@ -7,6 +7,8 @@ const client = new Client({
     intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.MessageContent, IntentsBitField.Flags.GuildMessages]
 });
 
+const data = new ContextMenuCommandBuilder().setName('User Information').setType(ApplicationCommandType.User);
+
 client.login(process.env.DISCORD_TOKEN);
 
 client.on(Events.ClientReady, () => {
@@ -48,4 +50,13 @@ client.on(Events.MessageCreate, message => {
             message.reply(sentMessage);
         }
     });
+});
+
+client.on(Events.InteractionCreate, (interaction) => {
+	if (!interaction.isMessageContextMenuCommand()) return;
+
+    if (interaction.commandName === 'Translate') {
+        const targetMessage = interaction.targetMessage;
+        interaction.reply(`Original message: ${targetMessage}\nTranslated message: ...`);
+    }
 });
