@@ -1,7 +1,6 @@
 import { Client, IntentsBitField, ContextMenuCommandBuilder, ApplicationCommandType, Events } from 'discord.js';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { geminiTranslation } from './translate.js';
+import 'dotenv/config';
 
 const client = new Client({
     intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.MessageContent, IntentsBitField.Flags.GuildMessages]
@@ -52,11 +51,28 @@ client.on(Events.MessageCreate, message => {
     });
 });
 
-client.on(Events.InteractionCreate, (interaction) => {
+client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isMessageContextMenuCommand()) return;
 
     if (interaction.commandName === 'Translate') {
         const targetMessage = interaction.targetMessage;
-        interaction.reply(`Original message: ${targetMessage}\nTranslated message: ...`);
+        await interaction.deferReply();
+        const response = await geminiTranslation(targetMessage.content);
+        const data = JSON.parse(response.trim().replace(/^```json\s*|\s*```$/g, ""));
+
+        interaction.followUp(`
+"${targetMessage}" translates to:
+**${data.translation}**
+
+✨ **Keywords:**\n
+${data.keywords
+    .map(k => `- **${k.word}**: ${k.meaning}`)
+    .join("\n")}
+
+💡 **Grammar Points:**\n
+${data.grammar_points
+    .map(g => `- **${g.title}** — ${g.explanation}`)
+    .join("\n")}
+`);
     }
 });
