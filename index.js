@@ -15,7 +15,7 @@ client.on("clientReady", () => {
 });
 
 client.on("guildCreate", guild => {
-    client.channels.cache.get("1431622444019613696").send(guild.name + " with " + guild.approximateMemberCount + " members added 🐱");
+    client.channels.cache.get("1431622444019613696").send(guild.name + " with " + guild.memberCount + " members added 🐱");
 });
 
 client.on("guildDelete", guild => {
