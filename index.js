@@ -45,7 +45,7 @@ client.on(Events.MessageCreate, message => {
         const occurence = Math.random();
 
         const sentMessage = replies[Math.floor(prob * replies.length)];
-        if (message.content.includes(emoji) && occurence >= .5) {
+        if (message.content.includes(emoji) && occurence >= .7) {
             message.reply(sentMessage);
         }
     });
