@@ -8,6 +8,15 @@ const client = new Client({
 
 const data = new ContextMenuCommandBuilder().setName('User Information').setType(ApplicationCommandType.User);
 
+client.once('ready', () => {
+  console.log(`Logged in as ${client.user.tag}`);
+  
+  client.guilds.cache.forEach(guild => {
+    const iconURL = guild.iconURL();
+    console.log(`${guild.name}: ${iconURL || 'No icon'}`);
+  });
+});
+
 client.login(process.env.DISCORD_TOKEN);
 
 client.on(Events.ClientReady, () => {
