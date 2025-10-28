@@ -8,7 +8,7 @@ const client = new Client({
 
 const data = new ContextMenuCommandBuilder().setName('User Information').setType(ApplicationCommandType.User);
 
-client.once('ready', () => {
+client.once(Events.ClientReady, () => {
   console.log(`Logged in as ${client.user.tag}`);
   
   client.guilds.cache.forEach(guild => {
