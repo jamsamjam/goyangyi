@@ -16,7 +16,7 @@ client.on(Events.ClientReady, () => {
 });
 
 client.on(Events.GuildCreate, guild => {
-    client.channels.cache.get("1431622444019613696").send(guild.name + " with " + guild.memberCount + " members added 🐱");
+    client.channels.cache.get("1431622444019613696").send(`${guild.name} with ${guild.memberCount} members added 🐱\n ${guild.iconURL() || "No icon"}`);
 });
 
 client.on(Events.GuildDelete, guild => {
