@@ -12,7 +12,7 @@ client.once(Events.ClientReady, () => {
   console.log(`Logged in as ${client.user.tag}`);
   
   client.guilds.cache.forEach(guild => {
-    const iconURL = guild.iconURL();
+    const iconURL = guild.iconURL({ dynamic: true });
     console.log(`${guild.name}: ${iconURL || 'No icon'}`);
   });
 });
@@ -25,7 +25,7 @@ client.on(Events.ClientReady, () => {
 });
 
 client.on(Events.GuildCreate, guild => {
-    client.channels.cache.get("1431622444019613696").send(`${guild.name} with ${guild.memberCount} members added 🐱\n ${guild.iconURL() || "No icon"}`);
+    client.channels.cache.get("1431622444019613696").send(`${guild.name} with ${guild.memberCount} members added 🐱\n ${guild.iconURL({ dynamic: true }) || "No icon"}`);
 });
 
 client.on(Events.GuildDelete, guild => {
