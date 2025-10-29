@@ -30,6 +30,10 @@ db.set('prob', 0.5);
 client.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
+    if (interaction.commandName === 'hey') {
+        interaction.reply('heyy');
+    }
+
     if (interaction.commandName === 'probability') {
         const prob = interaction.options.get('value').value;
         db.set('prob', prob);
