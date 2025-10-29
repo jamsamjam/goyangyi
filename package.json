@@ -9,9 +9,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@discordjs/rest": "^2.6.0",
     "@google/genai": "^1.27.0",
+    "discord-api-types": "^0.38.31",
     "discord.js": "^14.24.0",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "easy-json-database": "^1.5.1"
   },
   "type": "module"
 }

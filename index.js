@@ -1,12 +1,11 @@
+import 'dotenv/config';
 import { Client, IntentsBitField, ContextMenuCommandBuilder, ApplicationCommandType, Events } from 'discord.js';
 import { geminiTranslation } from './translate.js';
-import 'dotenv/config';
+import Database from "easy-json-database";
 
 const client = new Client({
     intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.MessageContent, IntentsBitField.Flags.GuildMessages]
 });
-
-const data = new ContextMenuCommandBuilder().setName('User Information').setType(ApplicationCommandType.User);
 
 client.once(Events.ClientReady, () => {
   console.log(`Logged in as ${client.user.tag}`);
@@ -18,6 +17,25 @@ client.once(Events.ClientReady, () => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
+const db = new Database("./some-database.json", {
+    snapshots: {
+        enabled: true,
+        interval: 24 * 60 * 60 * 1000,
+        folder: './backups/'
+    }
+});
+db.set('prob', 0.5);
+
+client.on(Events.InteractionCreate, async (interaction) => {
+    if (!interaction.isChatInputCommand()) return;
+
+    if (interaction.commandName === 'probability') {
+        const prob = interaction.options.get('value').value;
+        db.set('prob', prob);
+        interaction.reply(`Now Goyangyi replies with the probability of ${prob}.`);
+    }
+});
 
 client.on(Events.ClientReady, () => {
     console.log("The Bot is Ready :)");
@@ -51,11 +69,11 @@ client.on(Events.MessageCreate, message => {
 
     supportedEmojis.forEach(emoji => {
         const replies = emojiList[emoji]
-        const prob = Math.random();
-        const occurence = Math.random();
+        const randomIndex = Math.floor(Math.random() * replies.length);
+        const roll = Math.random();
 
-        const sentMessage = replies[Math.floor(prob * replies.length)];
-        if (message.content.includes(emoji) && occurence >= .7) {
+        const sentMessage = replies[randomIndex];
+        if (message.content.includes(emoji) && roll <= db.get('prob')) {
             message.reply(sentMessage);
         }
     });
