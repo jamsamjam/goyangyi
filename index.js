@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { Client, IntentsBitField, ContextMenuCommandBuilder, ApplicationCommandType, Events } from 'discord.js';
+import { Client, IntentsBitField, Events } from 'discord.js';
 import { geminiTranslation } from './translate.js';
 import Database from "easy-json-database";
 
@@ -18,14 +18,13 @@ client.once(Events.ClientReady, () => {
 
 client.login(process.env.DISCORD_TOKEN);
 
-const db = new Database("./some-database.json", {
+const db = new Database("./db.json", {
     snapshots: {
         enabled: true,
         interval: 24 * 60 * 60 * 1000,
         folder: './backups/'
     }
 });
-db.set('prob', 0.5);
 
 client.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
@@ -35,8 +34,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
 
     if (interaction.commandName === 'probability') {
-        const prob = interaction.options.get('value').value;
-        db.set('prob', prob);
+        const prob = interaction.options.get('value').value
+        db.set(`${interaction.guildId}:prob`, prob);
         interaction.reply(`Now Goyangyi replies with the probability of ${prob}.`);
     }
 });
@@ -47,11 +46,11 @@ client.on(Events.ClientReady, () => {
 });
 
 client.on(Events.GuildCreate, guild => {
-    client.channels.cache.get("1431622444019613696").send(`${guild.name} with ${guild.memberCount} members added 🐱\n ${guild.iconURL({ dynamic: true }) || "No icon"}`);
+    client.channels.cache.get(process.env.GUILD_ID).send(`${guild.name} with ${guild.memberCount} members added 🐱\n ${guild.iconURL({ dynamic: true }) || "No icon"}`);
 });
 
 client.on(Events.GuildDelete, guild => {
-    client.channels.cache.get("1431622444019613696").send("Noo.. " + guild.name + " removed us..");
+    client.channels.cache.get(process.env.GUILD_ID).send("Noo.. " + guild.name + " removed us..");
 });
 
 const emojiList = {
@@ -77,7 +76,7 @@ client.on(Events.MessageCreate, message => {
         const roll = Math.random();
 
         const sentMessage = replies[randomIndex];
-        if (message.content.includes(emoji) && roll <= db.get('prob')) {
+        if (message.content.includes(emoji) && roll <= (db.get(`${message.guildId}:prob`) || 0.5)) {
             message.reply(sentMessage);
         }
     });
