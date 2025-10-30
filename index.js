@@ -69,17 +69,21 @@ client.on(Events.MessageCreate, message => {
     }
 
     const supportedEmojis = Object.keys(emojiList);
+    const firstPresentEmoji = supportedEmojis.find(emoji => message.content.includes(emoji));
 
-    supportedEmojis.forEach(emoji => {
-        const replies = emojiList[emoji]
+    if (!firstPresentEmoji) return;
+
+    const prob = db.has(`${message.guildId}:prob`) ? db.get(`${message.guildId}:prob`) : 0.5;
+    const roll = Math.random();
+
+    if (roll <= prob) {
+        const replies = emojiList[firstPresentEmoji];
+
         const randomIndex = Math.floor(Math.random() * replies.length);
-        const roll = Math.random();
-
         const sentMessage = replies[randomIndex];
-        if (message.content.includes(emoji) && roll <= (db.get(`${message.guildId}:prob`) || 0.5)) {
-            message.reply(sentMessage);
-        }
-    });
+
+        message.reply(sentMessage);
+    }
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
