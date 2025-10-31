@@ -99,10 +99,9 @@ client.on(Events.MessageCreate, async message => {
     const prob = db.has(`${message.guildId}:gif-prob`) ? db.get(`${message.guildId}:gif-prob`) : 0.5;
     const roll = Math.random();
 
-    const response = await isWeatherColdMessage(message.content);
-    // console.log(response);
+    const isCold = await isWeatherColdMessage(message.content);
 
-    if (response.trim().toLowerCase() === 'true' && roll <= prob) {
+    if (isCold === true && roll <= prob) {
         const file = new AttachmentBuilder('asset/hanriver-cat.gif');
         message.channel.send({ files: [file] });
     };
