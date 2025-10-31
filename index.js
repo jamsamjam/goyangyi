@@ -109,11 +109,11 @@ client.on(Events.MessageCreate, async message => {
 
     if (isCold === true && roll <= prob) {
         try {
-            const audioFilePath = path.join(__dirname, 'asset/hanriver-cat.ogg');
-            await sendVoiceMessage(message.channel.id, audioFilePath, process.env.DISCORD_TOKEN);
-            
             const gif = new AttachmentBuilder('asset/hanriver-cat.gif');
             await message.channel.send({ files: [gif] });
+
+            const audioFilePath = path.join(__dirname, 'asset/hanriver-cat.ogg');
+            await sendVoiceMessage(message.channel.id, audioFilePath, process.env.DISCORD_TOKEN);
         } catch (error) {
             console.error('Voice message error:', error);
         }
