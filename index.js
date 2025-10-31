@@ -1,8 +1,14 @@
 import 'dotenv/config';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { Client, IntentsBitField, Events, AttachmentBuilder } from 'discord.js';
 import { geminiTranslation } from './translate.js';
 import { isWeatherColdMessage } from './analyseMessages.js';
+import { sendVoiceMessage } from './sendVoiceMessage.js';
 import Database from "easy-json-database";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const client = new Client({
     intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.MessageContent, IntentsBitField.Flags.GuildMessages]
@@ -102,9 +108,16 @@ client.on(Events.MessageCreate, async message => {
     const isCold = await isWeatherColdMessage(message.content);
 
     if (isCold === true && roll <= prob) {
-        const file = new AttachmentBuilder('asset/hanriver-cat.gif');
-        message.channel.send({ files: [file] });
-    };
+        try {
+            const audioFilePath = path.join(__dirname, 'asset/hanriver-cat.ogg');
+            await sendVoiceMessage(message.channel.id, audioFilePath, process.env.DISCORD_TOKEN);
+            
+            const gif = new AttachmentBuilder('asset/hanriver-cat.gif');
+            await message.channel.send({ files: [gif] });
+        } catch (error) {
+            console.error('Voice message error:', error);
+        }
+    }
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
