@@ -102,7 +102,7 @@ client.on(Events.MessageCreate, message => {
 client.on(Events.MessageCreate, async message => {
     if (message.author.bot) return;
 
-    const prob = db.has(`${message.guildId}:gif-prob`) ? db.get(`${message.guildId}:gif-prob`) : 0.5;
+    const prob = db.has(`${message.guildId}:gif-prob`) ? db.get(`${message.guildId}:gif-prob`) : 1.0;
     const roll = Math.random();
 
     const isCold = await isWeatherColdMessage(message.content);
