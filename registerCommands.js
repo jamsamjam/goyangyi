@@ -11,8 +11,20 @@ const commands = [
         .setDescription('Replies with hey!'),
 
     new SlashCommandBuilder()
-        .setName('probability')
+        .setName('emoji-probability')
         .setDescription('How often Goyangyi replies to emojis.')
+        .addNumberOption(opt => 
+            opt
+                .setName('value')
+                .setDescription('Enter a number between 0 and 1.')
+                .setRequired(true)
+                .setMinValue(0)
+                .setMaxValue(1)
+        ),
+
+    new SlashCommandBuilder()
+        .setName('gif-probability')
+        .setDescription('How often Goyangyi sends a meme.')
         .addNumberOption(opt => 
             opt
                 .setName('value')

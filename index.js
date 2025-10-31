@@ -1,6 +1,7 @@
 import 'dotenv/config';
-import { Client, IntentsBitField, Events } from 'discord.js';
+import { Client, IntentsBitField, Events, AttachmentBuilder } from 'discord.js';
 import { geminiTranslation } from './translate.js';
+import { isWeatherColdMessage } from './analyseMessages.js';
 import Database from "easy-json-database";
 
 const client = new Client({
@@ -33,10 +34,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
         interaction.reply('heyy');
     }
 
-    if (interaction.commandName === 'probability') {
+    if (interaction.commandName === 'emoji-probability') {
         const prob = interaction.options.get('value').value
-        db.set(`${interaction.guildId}:prob`, prob);
-        interaction.reply(`Now Goyangyi replies with the probability of ${prob}.`);
+        db.set(`${interaction.guildId}:emoji-prob`, prob);
+        interaction.reply(`Now Goyangyi replies to your emojis with the probability of ${prob}.`);
+    }
+
+        if (interaction.commandName === 'gif-probability') {
+        const prob = interaction.options.get('value').value
+        db.set(`${interaction.guildId}:gif-prob`, prob);
+        interaction.reply(`Now Goyangyi sends a meme with the probability of ${prob}.`);
     }
 });
 
@@ -73,7 +80,7 @@ client.on(Events.MessageCreate, message => {
 
     if (!firstPresentEmoji) return;
 
-    const prob = db.has(`${message.guildId}:prob`) ? db.get(`${message.guildId}:prob`) : 0.5;
+    const prob = db.has(`${message.guildId}:emoji-prob`) ? db.get(`${message.guildId}:emoji-prob`) : 0.5;
     const roll = Math.random();
 
     if (roll <= prob) {
@@ -86,6 +93,21 @@ client.on(Events.MessageCreate, message => {
     }
 });
 
+client.on(Events.MessageCreate, async message => {
+    if (message.author.bot) return;
+
+    const prob = db.has(`${message.guildId}:gif-prob`) ? db.get(`${message.guildId}:gif-prob`) : 0.5;
+    const roll = Math.random();
+
+    const response = await isWeatherColdMessage(message.content);
+    // console.log(response);
+
+    if (response.trim().toLowerCase() === 'true' && roll <= prob) {
+        const file = new AttachmentBuilder('asset/hanriver-cat.gif');
+        message.channel.send({ files: [file] });
+    };
+});
+
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isMessageContextMenuCommand()) return;
 
@@ -96,18 +118,18 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const data = JSON.parse(response.trim().replace(/^```json\s*|\s*```$/g, ""));
 
         interaction.followUp(`
-"${targetMessage}" translates to:
-**${data.translation}**
+            "${targetMessage}" translates to:
+            **${data.translation}**
 
-✨ **Keywords:**\n
-${data.keywords
-    .map(k => `- **${k.word}**: ${k.meaning}`)
-    .join("\n")}
+            ✨ **Keywords:**\n
+            ${data.keywords
+                .map(k => `- **${k.word}**: ${k.meaning}`)
+                .join("\n")}
 
-💡 **Grammar Points:**\n
-${data.grammar_points
-    .map(g => `- **${g.title}** — ${g.explanation}`)
-    .join("\n")}
-`);
+            💡 **Grammar Points:**\n
+            ${data.grammar_points
+                .map(g => `- **${g.title}** — ${g.explanation}`)
+                .join("\n")}
+        `);
     }
 });

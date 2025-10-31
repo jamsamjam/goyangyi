@@ -1,12 +1,12 @@
-import { GoogleGenAI } from "@google/genai";
 import 'dotenv/config';
+import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function geminiTranslation(message) {
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: `
+	const response = await ai.models.generateContent({
+		model: "gemini-2.5-flash",
+		contents: `
         You are a friendly and patient Korean tutor helping people learn Korean.
 
         Please output your response **strictly** in the following JSON format:
@@ -27,6 +27,6 @@ export async function geminiTranslation(message) {
         Message to translate:
         ${message}
         `,
-  });
-  return response.text;
+	});
+	return response.text;
 }
