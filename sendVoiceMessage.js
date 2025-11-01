@@ -33,7 +33,7 @@ export async function sendVoiceMessage(channelId, audioFilePath, botToken) {
         body: fileBuffer
     });
 
-    const waveform = Buffer.from(new Uint8Array(256).fill(128)).toString('base64');
+    const waveform = 'acU6Va9UcSVZzsVw7IU/80s0Kh/pbrTcwmpR9da4mvQejIMykkgo9F2FfeCd235K/atHZtSAmxKeTUgKxAdNVO8PAoZq1cHNQXT/PHthL2sfPZGSdxNgLH0AuJwVeI7QZJ02ke40+HkUcBoDdqGDZeUvPqoIRbE23Kr+sexYYe4dVq+zyCe3ci/6zkMWbVBpCjq8D8ZZEFo/lmPJTkgjwqnqHuf6XT4mJyLNphQjvFH9aRqIZpPoQz1sGwAY2vssQ5mTy5J5muGo+n82b0xFROZwsJpumDsFi4Da/85uWS/YzjY5BdxGac8rgUqm9IKh7E6GHzOGOy0LQIz3O4ntTg==';
 
     const messageResponse = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
         method: 'POST',
