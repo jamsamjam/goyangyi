@@ -1,6 +1,7 @@
 .env
 .DS_Store
 /node_modules
+service-account.json
 
 db.json
 .embeddings.cache.json

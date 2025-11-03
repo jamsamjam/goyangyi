@@ -2,10 +2,12 @@ import 'dotenv/config';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Client, IntentsBitField, Events, AttachmentBuilder } from 'discord.js';
+import express from 'express';
+import cors from 'cors';
+import Database from "easy-json-database";
 import { geminiTranslation } from './translate.js';
 import { isWeatherColdMessage } from './analyseMessages.js';
 import { sendVoiceMessage } from './sendVoiceMessage.js';
-import Database from "easy-json-database";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +33,23 @@ const db = new Database("./db.json", {
         interval: 24 * 60 * 60 * 1000,
         folder: './backups/'
     }
+});
+
+const app = express();
+const port = 3000;
+
+app.use(cors());
+
+app.get('/api/stats', (req, res) => {
+    const stats = {
+        users: client.users.cache.size,
+        servers: client.guilds.cache.size
+    }
+    res.json('Hello World!');
+});
+
+app.listen(port, () => {
+    console.log(`API server running on port ${port}`)
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
