@@ -3,7 +3,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { Client, IntentsBitField, Events, AttachmentBuilder } from 'discord.js';
 import express from 'express';
-import cors from 'cors';
 import Database from "easy-json-database";
 import { geminiTranslation } from './translate.js';
 import { isWeatherColdMessage } from './analyseMessages.js';
@@ -38,9 +37,7 @@ const db = new Database("./db.json", {
 const app = express();
 const port = 3000;
 
-app.use(cors());
-
-app.get('/api/stats', (req, res) => {
+app.get('/stats', (req, res) => {
     const stats = {
         users: client.users.cache.size,
         servers: client.guilds.cache.size
