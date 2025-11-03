@@ -45,7 +45,7 @@ app.get('/api/stats', (req, res) => {
         users: client.users.cache.size,
         servers: client.guilds.cache.size
     }
-    res.json('Hello World!');
+    res.json(stats);
 });
 
 app.listen(port, () => {
