@@ -39,7 +39,7 @@ const port = 3000;
 
 app.get('/stats', (req, res) => {
     const stats = {
-        users: client.users.cache.size,
+        users: client.guilds.cache.map(guild => guild.memberCount).reduce((p, c) => p + c, 0),
         servers: client.guilds.cache.size
     }
     res.json(stats);
